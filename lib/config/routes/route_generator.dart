@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_cart/features/authentication/presentation/pages/home_page.dart';
 import 'package:shopping_cart/features/authentication/presentation/pages/splash_page.dart';
 import '../../features/authentication/presentation/pages/login_page.dart';
 import '../../features/authentication/presentation/pages/register_page.dart';
@@ -15,7 +16,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const RegisterPage());
 
       case AppRoutes.home:
-        return MaterialPageRoute(builder: (_) => const SplashPage());
+        return MaterialPageRoute(builder: (_) => const HomePage());
 
       case AppRoutes.splash:
         return MaterialPageRoute(builder: (_) => const SplashPage());
