@@ -3,6 +3,10 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
+import 'package:drift/drift.dart';
+import 'package:drift_sqflite/drift_sqflite.dart';
+import 'package:path/path.dart' as p;
+import 'package:sqflite/sqflite.dart';
 
 part 'app_database.g.dart';
 
@@ -26,13 +30,14 @@ class Users extends Table {
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
+  @override
   int get schemaVersion => 1;
 
   static LazyDatabase _openConnection() {
     return LazyDatabase(() async {
-      final dbFolder = await getApplicationDocumentsDirectory();
-      final file = File(p.join(dbFolder.path, 'shopping_cart.sqlite'));
-      return NativeDatabase(file);
+      final databasesPath = await getDatabasesPath(); // usa la ruta de sqlite de Android
+      final dbPath = p.join(databasesPath, 'shopping_cart.db');
+      return SqfliteQueryExecutor(path: dbPath, singleInstance: true);
     });
   }
 }
