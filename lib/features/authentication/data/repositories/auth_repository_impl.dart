@@ -21,6 +21,14 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.tokenDataSource,
   });
 
+  bool _isValidEmail(String email) {
+    final emailRegExp = RegExp(
+      r"^[a-zA-Z0-9.!#%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}"
+      r"[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
+    );
+    return emailRegExp.hasMatch(email);
+  }
+
   @override
   Future<Either<Failure, User>> register({
     required String username,
@@ -31,6 +39,20 @@ class AuthRepositoryImpl implements AuthRepository {
     required String phone,
     required String shippingAddress,
   }) async {
+
+    if (username.trim().isEmpty ||
+        email.trim().isEmpty ||
+        password.trim().isEmpty ||
+        firstName.trim().isEmpty ||
+        lastName.trim().isEmpty) {
+      return Left(ValidationFailure('Campos obligatorios incompletos'));
+    }
+
+    if (!_isValidEmail(email)) {
+      return Left(ValidationFailure('Email inválido'));
+    }
+
+
     if (!await networkInfo.isConnected) {
       return Left(NetworkFailure());
     }
@@ -47,8 +69,12 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       // Guardar usuario y token
-      //await localDataSource.cacheUser(authResult.user);
-      //await tokenDataSource.saveToken(authResult.token);
+      await localDataSource.cacheUser(authResult.user);
+      try {
+        await tokenDataSource.saveToken(authResult.token);
+      } catch (_) {
+        return Left(CacheFailure());
+      }
 
       return Right(authResult.user);
 
@@ -66,6 +92,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String username,
     required String password,
   }) async {
+    if (username.trim().isEmpty || password.trim().isEmpty) {
+      return Left(ValidationFailure('Nombre de usuario y contraseña son requeridos'));
+    }
+
     if (!await networkInfo.isConnected) {
       return Left(NetworkFailure());
     }
@@ -76,8 +106,12 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
       );
 
-      //await localDataSource.cacheUser(authResult.user);
-      //await tokenDataSource.saveToken(authResult.token);
+      await localDataSource.cacheUser(authResult.user);
+      try {
+        await tokenDataSource.saveToken(authResult.token);
+      } catch (_) {
+        return Left(CacheFailure());
+      }
 
       return Right(authResult.user);
 
@@ -92,21 +126,26 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, User>> getCurrentUser(String token) async {
+    if (token.trim().isEmpty) {
+      return Left(AuthenticationFailure('Token no válido'));
+    }
     try {
+      // Intentar cache primero
       try {
-        //final cachedUser = await localDataSource.getCachedUser();
-       //return Right(cachedUser);
+        final cachedUser = await localDataSource.getCachedUser();
+        return Right(cachedUser);
       } on CacheException {
+        // Continuar al remoto
       }
 
+      // Obtener del backend
       if (await networkInfo.isConnected) {
         final userModel = await remoteDataSource.getCurrentUser(token);
-        //await localDataSource.cacheUser(userModel);
+        await localDataSource.cacheUser(userModel);
         return Right(userModel);
       }
 
       return Left(CacheFailure());
-
     } on UnauthorizedException {
       return Left(AuthenticationFailure('Session expired'));
     } on ServerException {
@@ -119,8 +158,12 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> logout() async {
     try {
-      //await localDataSource.clearCache();
-      //await tokenDataSource.deleteToken();
+      await localDataSource.clearCache();
+      try {
+        await tokenDataSource.deleteToken();
+      } catch (_) {
+        return Left(CacheFailure());
+      }
       return const Right(null);
     } catch (e) {
       return Left(CacheFailure());
