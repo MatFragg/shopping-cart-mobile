@@ -5,6 +5,7 @@ import 'package:shopping_cart/features/authentication/presentation/bloc/auth_eve
 import 'app.dart';
 import 'config/injection_container.dart' as di;
 import 'package:shopping_cart/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:shopping_cart/features/products/presentation/bloc/product_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +17,9 @@ void main() async {
       providers: [
         BlocProvider<AuthBloc>(
           create: (context) => di.sl<AuthBloc>()..add(CheckAuthStatus()),
+        ),
+        BlocProvider<ProductBloc>(
+          create: (context) => di.sl<ProductBloc>(),
         ),
       ],
       child: const MyApp(),

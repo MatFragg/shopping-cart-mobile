@@ -26,18 +26,47 @@ class Users extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Users])
+class Products extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get description => text()();
+  RealColumn get price => real()();
+  IntColumn get stock => integer()();
+  TextColumn get category => text()();
+  TextColumn get imageUrl => text().nullable()();
+  TextColumn get sellerId => text()();
+  BoolColumn get active => boolean()();
+  BoolColumn get available => boolean()();
+  DateTimeColumn get createdAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DriftDatabase(tables: [Users, Products])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2; // Incrementado por agregar Products
 
-  static LazyDatabase _openConnection() {
-    return LazyDatabase(() async {
-      final databasesPath = await getDatabasesPath(); // usa la ruta de sqlite de Android
-      final dbPath = p.join(databasesPath, 'shopping_cart.db');
-      return SqfliteQueryExecutor(path: dbPath, singleInstance: true);
-    });
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (Migrator m) async {
+      await m.createAll();
+    },
+    onUpgrade: (Migrator m, int from, int to) async {
+      if (from < 2) {
+        // Migración para agregar Products si vienes de v1
+        await m.create(products);
+      }
+    },
+  );
+
+  static QueryExecutor _openConnection() {
+    return SqfliteQueryExecutor(
+      path: p.join(getDatabasesPath().toString(), 'shopping_cart.db'),
+      singleInstance: true,
+    );
   }
 }
