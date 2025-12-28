@@ -186,7 +186,7 @@ class _MyProductsPageState extends State<MyProductsPage> {
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          AppRoutes.editProduct,
+                          AppRoutes.productDetail,
                           arguments: product,
                         );
                       },
