@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_cart/config/routes/app_routes.dart';
 import 'package:shopping_cart/features/authentication/presentation/pages/login_page.dart';
 import 'package:shopping_cart/features/authentication/presentation/widgets/activity_item.dart';
 import 'package:shopping_cart/features/authentication/presentation/widgets/app_drawer.dart';
@@ -54,29 +55,34 @@ class HomePage extends StatelessWidget {
                     crossAxisSpacing: 16,
                     children: [
                       QuickActionCard(
-                        icon: Icons.inventory_2,
+                        icon: Icons.inventory,
                         title: "My Products",
-                        backgroundColor: Colors.blue,
-                        onTap: () {},
+                        subtitle: "Manage inventory",
+                        color: Colors.blue,
+                        route: AppRoutes.myProducts,
                       ),
                       QuickActionCard(
-                        icon: Icons.search,
+                        icon: Icons.shopping_bag,
                         title: "Browse",
-                        backgroundColor: Colors.green,
-                        onTap: () {},
+                        subtitle: "Explore products",
+                        color: Colors.green,
+                        route: AppRoutes.browseProducts,
                       ),
                       QuickActionCard(
-                        icon: Icons.receipt_long,
-                        title: "My Orders",
-                        backgroundColor: Colors.orange,
-                        onTap: () {},
+                        icon: Icons.shopping_cart,
+                        title: "Orders",
+                        subtitle: "Track purchases",
+                        color: Colors.orange,
+                        route: '/orders', // TODO: Implementar
                       ),
                       QuickActionCard(
-                        icon: Icons.monetization_on,
-                        title: "My Sales",
-                        backgroundColor: Colors.purple,
-                        onTap: () {},
+                        icon: Icons.attach_money,
+                        title: "Sales",
+                        subtitle: "View earnings",
+                        color: Colors.purple,
+                        route: '/sales', // TODO: Implementar
                       ),
+
                     ],
                   ),
                   const SectionHeader(title: "Recent Activity"),
@@ -103,11 +109,10 @@ class HomePage extends StatelessWidget {
             ),
             floatingActionButton: (user != null)
                 ? FloatingActionButton.extended(
-              onPressed: () {},
-              label: const Text("Add Product"),
+              onPressed: () => Navigator.of(context).pushNamed(AppRoutes.createProduct),
               icon: const Icon(Icons.add),
-            )
-                : null,
+              label: const Text("Sell Product"),
+            ) : null,
           );
         },
       ),
