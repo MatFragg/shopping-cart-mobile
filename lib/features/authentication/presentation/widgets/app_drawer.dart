@@ -1,6 +1,6 @@
-// dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_cart/config/routes/app_routes.dart';
 import 'package:shopping_cart/features/authentication/presentation/bloc/auth_event.dart';
 import '../../../authentication/presentation/bloc/auth_bloc.dart';
 import 'package:shopping_cart/features/authentication/presentation/bloc/auth_state.dart';
@@ -30,7 +30,10 @@ class AppDrawer extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.home),
                       title: const Text('Home'),
-                      onTap: () => Navigator.of(context).pop(),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+                      },
                     ),
                     const Divider(),
                     _buildSectionHeader('MARKETPLACE'),
@@ -39,6 +42,7 @@ class AppDrawer extends StatelessWidget {
                       title: const Text('My Products'),
                       onTap: () {
                         Navigator.of(context).pop();
+                        Navigator.of(context).pushNamed(AppRoutes.myProducts);
                       },
                     ),
                     ListTile(
@@ -46,6 +50,7 @@ class AppDrawer extends StatelessWidget {
                       title: const Text('Browse Products'),
                       onTap: () {
                         Navigator.of(context).pop();
+                        Navigator.of(context).pushNamed(AppRoutes.browseProducts);
                       },
                     ),
                     const Divider(),
@@ -55,6 +60,7 @@ class AppDrawer extends StatelessWidget {
                       title: const Text('My Purchases'),
                       onTap: () {
                         Navigator.of(context).pop();
+                        // TODO: Implementar cuando tengas la página de compras
                       },
                     ),
                     ListTile(
@@ -62,6 +68,7 @@ class AppDrawer extends StatelessWidget {
                       title: const Text('My Sales'),
                       onTap: () {
                         Navigator.of(context).pop();
+                        // TODO: Implementar cuando tengas la página de ventas
                       },
                     ),
                     const Divider(),
@@ -70,6 +77,7 @@ class AppDrawer extends StatelessWidget {
                       title: const Text('Settings'),
                       onTap: () {
                         Navigator.of(context).pop();
+                        // TODO: Implementar cuando tengas la página de ajustes
                       },
                     ),
                   ],
@@ -144,7 +152,6 @@ class AppDrawer extends StatelessWidget {
 
   void _showLogoutDialog(BuildContext context) {
     final originalContext = context;
-
     final dialogHostContext = Navigator.of(context).context;
 
     showDialog(
