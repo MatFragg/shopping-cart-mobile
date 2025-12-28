@@ -126,7 +126,7 @@ class _BrowseProductsPageState extends State<BrowseProductsPage> {
                             Navigator.pushNamed(
                               context,
                               AppRoutes.productDetail,
-                              arguments: product.id,
+                              arguments: product,
                             );
                           },
                         );
