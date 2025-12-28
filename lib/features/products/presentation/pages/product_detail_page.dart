@@ -206,7 +206,7 @@ class _SellerInfo extends StatelessWidget {
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   Text(
-                    'ID: ${sellerId.substring(0, 8)}...',
+                    'ID: ${sellerId.length > 8 ? sellerId.substring(0, 8) + '...' : sellerId}',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
