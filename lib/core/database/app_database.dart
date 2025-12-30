@@ -83,6 +83,8 @@ class AppDatabase extends _$AppDatabase {
       if (from < 2) {
         // Migración para agregar Products si vienes de v1
         await m.create(products);
+        await m.createTable(cart);
+        await m.createTable(cartItems);
       }
     },
   );
