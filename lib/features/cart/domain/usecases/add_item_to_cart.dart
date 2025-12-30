@@ -12,7 +12,10 @@ class AddItemToCart implements UseCase<Cart, AddItemParams> {
 
   @override
   Future<Either<Failure, Cart>> call(AddItemParams params) async {
-    // TODO: Validaciones antes de llamar al repository
+    if (params.productId.isEmpty) {
+      return Left(ValidationFailure('Product ID cannot be empty'));
+    }
+
     if (params.quantity <= 0) {
       return Left(ValidationFailure('Quantity must be greater than 0'));
     }
