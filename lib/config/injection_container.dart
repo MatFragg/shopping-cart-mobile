@@ -223,7 +223,7 @@ Future<void> init() async {
   sl.registerLazySingleton<CartRepository>(
         () => CartRepositoryImpl(
       remoteDataSource: sl(),
-      //localDataSource: sl(),
+      localDataSource: sl(),
       tokenDataSource: sl(),
       networkInfo: sl(),
     ),
