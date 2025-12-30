@@ -10,6 +10,7 @@ class CartItemModel extends CartItem {
     required super.quantity,
     required super.unitPrice,
     required super.subtotal,
+    super.imageUrl,
   });
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class CartItemModel extends CartItem {
       quantity: json['quantity'] ?? 0,
       unitPrice: (json['unitPrice'] as num?)?.toDouble() ?? 0.0,
       subtotal: (json['subtotal'] as num?)?.toDouble() ?? 0.0,
+      imageUrl: json['imageUrl'],
     );
   }
 
