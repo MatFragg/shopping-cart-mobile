@@ -73,7 +73,7 @@ class HomePage extends StatelessWidget {
                         title: "Orders",
                         subtitle: "Track purchases",
                         color: Colors.orange,
-                        route: '/orders', // TODO: Implementar
+                        route: AppRoutes.cart,
                       ),
                       QuickActionCard(
                         icon: Icons.attach_money,

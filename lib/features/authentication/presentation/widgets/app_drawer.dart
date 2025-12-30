@@ -60,7 +60,7 @@ class AppDrawer extends StatelessWidget {
                       title: const Text('My Purchases'),
                       onTap: () {
                         Navigator.of(context).pop();
-                        // TODO: Implementar cuando tengas la página de compras
+                        Navigator.of(context).pushNamed(AppRoutes.cart);
                       },
                     ),
                     ListTile(
@@ -103,7 +103,19 @@ class AppDrawer extends StatelessWidget {
   }
 
   Widget _buildDrawerHeader(BuildContext context, dynamic user) {
-    final initials = "${user.firstName[0]}${user.lastName[0]}".toUpperCase();
+    final firstName = user.firstName ?? '';
+    final lastName = user.lastName ?? '';
+
+    String initials;
+    if (firstName.isNotEmpty && lastName.isNotEmpty) {
+      initials = "${firstName[0]}${lastName[0]}".toUpperCase();
+    } else if (firstName.isNotEmpty) {
+      initials = firstName[0].toUpperCase();
+    } else if (lastName.isNotEmpty) {
+      initials = lastName[0].toUpperCase();
+    } else {
+      initials = user.email.isNotEmpty ? user.email[0].toUpperCase() : "U";
+    }
 
     return UserAccountsDrawerHeader(
       decoration: BoxDecoration(
@@ -128,7 +140,7 @@ class AppDrawer extends StatelessWidget {
         ),
       ),
       accountName: Text(
-        "${user.firstName} ${user.lastName}",
+        "${firstName.isNotEmpty ? firstName : 'User'} ${lastName.isNotEmpty ? lastName : ''}".trim(),
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
       accountEmail: Text(user.email),

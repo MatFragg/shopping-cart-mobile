@@ -43,12 +43,36 @@ class Products extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Users, Products])
+class Cart extends Table {
+  TextColumn get id => text()();
+  TextColumn get customerId => text()();
+  TextColumn get status => text()();
+  RealColumn get total => real()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+class CartItems extends Table {
+  TextColumn get id => text()();
+  TextColumn get cartId => text()();
+  TextColumn get productId => text()();
+  TextColumn get sellerId => text()();
+  TextColumn get productName => text()();
+  IntColumn get quantity => integer()();
+  RealColumn get unitPrice => real()();
+  RealColumn get subtotal => real()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DriftDatabase(tables: [Users, Products, Cart, CartItems])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2; // Incrementado por agregar Products
+  int get schemaVersion => 3; // Incrementado por agregar Products
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

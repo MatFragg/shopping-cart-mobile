@@ -30,3 +30,16 @@ class ValidationFailure extends Failure {
   @override
   List<Object?> get props => [message];
 }
+
+class InsufficientStockFailure extends Failure {
+  final String message;
+  final int availableStock;
+
+  InsufficientStockFailure({
+    required this.message,
+    this.availableStock = 0,
+  });
+
+  @override
+  List<Object?> get props => [message, availableStock];
+}

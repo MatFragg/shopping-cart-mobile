@@ -8,4 +8,6 @@ class AppRoutes {
   static const String createProduct = '/create-product';
   static const String editProduct = '/edit-product';
   static const String productDetail = '/product-detail';
+  static const String cart = '/cart';
+  static const String checkout = '/checkout';
 }

@@ -1273,16 +1273,845 @@ class ProductsCompanion extends UpdateCompanion<Product> {
   }
 }
 
+class $CartTable extends Cart with TableInfo<$CartTable, CartData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CartTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _customerIdMeta = const VerificationMeta(
+    'customerId',
+  );
+  @override
+  late final GeneratedColumn<String> customerId = GeneratedColumn<String>(
+    'customer_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _totalMeta = const VerificationMeta('total');
+  @override
+  late final GeneratedColumn<double> total = GeneratedColumn<double>(
+    'total',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, customerId, status, total];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cart';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CartData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('customer_id')) {
+      context.handle(
+        _customerIdMeta,
+        customerId.isAcceptableOrUnknown(data['customer_id']!, _customerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_customerIdMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('total')) {
+      context.handle(
+        _totalMeta,
+        total.isAcceptableOrUnknown(data['total']!, _totalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_totalMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CartData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CartData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      customerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}customer_id'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      total: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}total'],
+      )!,
+    );
+  }
+
+  @override
+  $CartTable createAlias(String alias) {
+    return $CartTable(attachedDatabase, alias);
+  }
+}
+
+class CartData extends DataClass implements Insertable<CartData> {
+  final String id;
+  final String customerId;
+  final String status;
+  final double total;
+  const CartData({
+    required this.id,
+    required this.customerId,
+    required this.status,
+    required this.total,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['customer_id'] = Variable<String>(customerId);
+    map['status'] = Variable<String>(status);
+    map['total'] = Variable<double>(total);
+    return map;
+  }
+
+  CartCompanion toCompanion(bool nullToAbsent) {
+    return CartCompanion(
+      id: Value(id),
+      customerId: Value(customerId),
+      status: Value(status),
+      total: Value(total),
+    );
+  }
+
+  factory CartData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CartData(
+      id: serializer.fromJson<String>(json['id']),
+      customerId: serializer.fromJson<String>(json['customerId']),
+      status: serializer.fromJson<String>(json['status']),
+      total: serializer.fromJson<double>(json['total']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'customerId': serializer.toJson<String>(customerId),
+      'status': serializer.toJson<String>(status),
+      'total': serializer.toJson<double>(total),
+    };
+  }
+
+  CartData copyWith({
+    String? id,
+    String? customerId,
+    String? status,
+    double? total,
+  }) => CartData(
+    id: id ?? this.id,
+    customerId: customerId ?? this.customerId,
+    status: status ?? this.status,
+    total: total ?? this.total,
+  );
+  CartData copyWithCompanion(CartCompanion data) {
+    return CartData(
+      id: data.id.present ? data.id.value : this.id,
+      customerId: data.customerId.present
+          ? data.customerId.value
+          : this.customerId,
+      status: data.status.present ? data.status.value : this.status,
+      total: data.total.present ? data.total.value : this.total,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CartData(')
+          ..write('id: $id, ')
+          ..write('customerId: $customerId, ')
+          ..write('status: $status, ')
+          ..write('total: $total')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, customerId, status, total);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CartData &&
+          other.id == this.id &&
+          other.customerId == this.customerId &&
+          other.status == this.status &&
+          other.total == this.total);
+}
+
+class CartCompanion extends UpdateCompanion<CartData> {
+  final Value<String> id;
+  final Value<String> customerId;
+  final Value<String> status;
+  final Value<double> total;
+  final Value<int> rowid;
+  const CartCompanion({
+    this.id = const Value.absent(),
+    this.customerId = const Value.absent(),
+    this.status = const Value.absent(),
+    this.total = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CartCompanion.insert({
+    required String id,
+    required String customerId,
+    required String status,
+    required double total,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       customerId = Value(customerId),
+       status = Value(status),
+       total = Value(total);
+  static Insertable<CartData> custom({
+    Expression<String>? id,
+    Expression<String>? customerId,
+    Expression<String>? status,
+    Expression<double>? total,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (customerId != null) 'customer_id': customerId,
+      if (status != null) 'status': status,
+      if (total != null) 'total': total,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CartCompanion copyWith({
+    Value<String>? id,
+    Value<String>? customerId,
+    Value<String>? status,
+    Value<double>? total,
+    Value<int>? rowid,
+  }) {
+    return CartCompanion(
+      id: id ?? this.id,
+      customerId: customerId ?? this.customerId,
+      status: status ?? this.status,
+      total: total ?? this.total,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (customerId.present) {
+      map['customer_id'] = Variable<String>(customerId.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (total.present) {
+      map['total'] = Variable<double>(total.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CartCompanion(')
+          ..write('id: $id, ')
+          ..write('customerId: $customerId, ')
+          ..write('status: $status, ')
+          ..write('total: $total, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CartItemsTable extends CartItems
+    with TableInfo<$CartItemsTable, CartItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CartItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cartIdMeta = const VerificationMeta('cartId');
+  @override
+  late final GeneratedColumn<String> cartId = GeneratedColumn<String>(
+    'cart_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _productIdMeta = const VerificationMeta(
+    'productId',
+  );
+  @override
+  late final GeneratedColumn<String> productId = GeneratedColumn<String>(
+    'product_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sellerIdMeta = const VerificationMeta(
+    'sellerId',
+  );
+  @override
+  late final GeneratedColumn<String> sellerId = GeneratedColumn<String>(
+    'seller_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _productNameMeta = const VerificationMeta(
+    'productName',
+  );
+  @override
+  late final GeneratedColumn<String> productName = GeneratedColumn<String>(
+    'product_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitPriceMeta = const VerificationMeta(
+    'unitPrice',
+  );
+  @override
+  late final GeneratedColumn<double> unitPrice = GeneratedColumn<double>(
+    'unit_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _subtotalMeta = const VerificationMeta(
+    'subtotal',
+  );
+  @override
+  late final GeneratedColumn<double> subtotal = GeneratedColumn<double>(
+    'subtotal',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    cartId,
+    productId,
+    sellerId,
+    productName,
+    quantity,
+    unitPrice,
+    subtotal,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cart_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CartItem> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('cart_id')) {
+      context.handle(
+        _cartIdMeta,
+        cartId.isAcceptableOrUnknown(data['cart_id']!, _cartIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_cartIdMeta);
+    }
+    if (data.containsKey('product_id')) {
+      context.handle(
+        _productIdMeta,
+        productId.isAcceptableOrUnknown(data['product_id']!, _productIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_productIdMeta);
+    }
+    if (data.containsKey('seller_id')) {
+      context.handle(
+        _sellerIdMeta,
+        sellerId.isAcceptableOrUnknown(data['seller_id']!, _sellerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sellerIdMeta);
+    }
+    if (data.containsKey('product_name')) {
+      context.handle(
+        _productNameMeta,
+        productName.isAcceptableOrUnknown(
+          data['product_name']!,
+          _productNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_productNameMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_quantityMeta);
+    }
+    if (data.containsKey('unit_price')) {
+      context.handle(
+        _unitPriceMeta,
+        unitPrice.isAcceptableOrUnknown(data['unit_price']!, _unitPriceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unitPriceMeta);
+    }
+    if (data.containsKey('subtotal')) {
+      context.handle(
+        _subtotalMeta,
+        subtotal.isAcceptableOrUnknown(data['subtotal']!, _subtotalMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_subtotalMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CartItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CartItem(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      cartId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cart_id'],
+      )!,
+      productId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}product_id'],
+      )!,
+      sellerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}seller_id'],
+      )!,
+      productName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}product_name'],
+      )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity'],
+      )!,
+      unitPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}unit_price'],
+      )!,
+      subtotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}subtotal'],
+      )!,
+    );
+  }
+
+  @override
+  $CartItemsTable createAlias(String alias) {
+    return $CartItemsTable(attachedDatabase, alias);
+  }
+}
+
+class CartItem extends DataClass implements Insertable<CartItem> {
+  final String id;
+  final String cartId;
+  final String productId;
+  final String sellerId;
+  final String productName;
+  final int quantity;
+  final double unitPrice;
+  final double subtotal;
+  const CartItem({
+    required this.id,
+    required this.cartId,
+    required this.productId,
+    required this.sellerId,
+    required this.productName,
+    required this.quantity,
+    required this.unitPrice,
+    required this.subtotal,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['cart_id'] = Variable<String>(cartId);
+    map['product_id'] = Variable<String>(productId);
+    map['seller_id'] = Variable<String>(sellerId);
+    map['product_name'] = Variable<String>(productName);
+    map['quantity'] = Variable<int>(quantity);
+    map['unit_price'] = Variable<double>(unitPrice);
+    map['subtotal'] = Variable<double>(subtotal);
+    return map;
+  }
+
+  CartItemsCompanion toCompanion(bool nullToAbsent) {
+    return CartItemsCompanion(
+      id: Value(id),
+      cartId: Value(cartId),
+      productId: Value(productId),
+      sellerId: Value(sellerId),
+      productName: Value(productName),
+      quantity: Value(quantity),
+      unitPrice: Value(unitPrice),
+      subtotal: Value(subtotal),
+    );
+  }
+
+  factory CartItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CartItem(
+      id: serializer.fromJson<String>(json['id']),
+      cartId: serializer.fromJson<String>(json['cartId']),
+      productId: serializer.fromJson<String>(json['productId']),
+      sellerId: serializer.fromJson<String>(json['sellerId']),
+      productName: serializer.fromJson<String>(json['productName']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+      unitPrice: serializer.fromJson<double>(json['unitPrice']),
+      subtotal: serializer.fromJson<double>(json['subtotal']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'cartId': serializer.toJson<String>(cartId),
+      'productId': serializer.toJson<String>(productId),
+      'sellerId': serializer.toJson<String>(sellerId),
+      'productName': serializer.toJson<String>(productName),
+      'quantity': serializer.toJson<int>(quantity),
+      'unitPrice': serializer.toJson<double>(unitPrice),
+      'subtotal': serializer.toJson<double>(subtotal),
+    };
+  }
+
+  CartItem copyWith({
+    String? id,
+    String? cartId,
+    String? productId,
+    String? sellerId,
+    String? productName,
+    int? quantity,
+    double? unitPrice,
+    double? subtotal,
+  }) => CartItem(
+    id: id ?? this.id,
+    cartId: cartId ?? this.cartId,
+    productId: productId ?? this.productId,
+    sellerId: sellerId ?? this.sellerId,
+    productName: productName ?? this.productName,
+    quantity: quantity ?? this.quantity,
+    unitPrice: unitPrice ?? this.unitPrice,
+    subtotal: subtotal ?? this.subtotal,
+  );
+  CartItem copyWithCompanion(CartItemsCompanion data) {
+    return CartItem(
+      id: data.id.present ? data.id.value : this.id,
+      cartId: data.cartId.present ? data.cartId.value : this.cartId,
+      productId: data.productId.present ? data.productId.value : this.productId,
+      sellerId: data.sellerId.present ? data.sellerId.value : this.sellerId,
+      productName: data.productName.present
+          ? data.productName.value
+          : this.productName,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      unitPrice: data.unitPrice.present ? data.unitPrice.value : this.unitPrice,
+      subtotal: data.subtotal.present ? data.subtotal.value : this.subtotal,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CartItem(')
+          ..write('id: $id, ')
+          ..write('cartId: $cartId, ')
+          ..write('productId: $productId, ')
+          ..write('sellerId: $sellerId, ')
+          ..write('productName: $productName, ')
+          ..write('quantity: $quantity, ')
+          ..write('unitPrice: $unitPrice, ')
+          ..write('subtotal: $subtotal')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    cartId,
+    productId,
+    sellerId,
+    productName,
+    quantity,
+    unitPrice,
+    subtotal,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CartItem &&
+          other.id == this.id &&
+          other.cartId == this.cartId &&
+          other.productId == this.productId &&
+          other.sellerId == this.sellerId &&
+          other.productName == this.productName &&
+          other.quantity == this.quantity &&
+          other.unitPrice == this.unitPrice &&
+          other.subtotal == this.subtotal);
+}
+
+class CartItemsCompanion extends UpdateCompanion<CartItem> {
+  final Value<String> id;
+  final Value<String> cartId;
+  final Value<String> productId;
+  final Value<String> sellerId;
+  final Value<String> productName;
+  final Value<int> quantity;
+  final Value<double> unitPrice;
+  final Value<double> subtotal;
+  final Value<int> rowid;
+  const CartItemsCompanion({
+    this.id = const Value.absent(),
+    this.cartId = const Value.absent(),
+    this.productId = const Value.absent(),
+    this.sellerId = const Value.absent(),
+    this.productName = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.unitPrice = const Value.absent(),
+    this.subtotal = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CartItemsCompanion.insert({
+    required String id,
+    required String cartId,
+    required String productId,
+    required String sellerId,
+    required String productName,
+    required int quantity,
+    required double unitPrice,
+    required double subtotal,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       cartId = Value(cartId),
+       productId = Value(productId),
+       sellerId = Value(sellerId),
+       productName = Value(productName),
+       quantity = Value(quantity),
+       unitPrice = Value(unitPrice),
+       subtotal = Value(subtotal);
+  static Insertable<CartItem> custom({
+    Expression<String>? id,
+    Expression<String>? cartId,
+    Expression<String>? productId,
+    Expression<String>? sellerId,
+    Expression<String>? productName,
+    Expression<int>? quantity,
+    Expression<double>? unitPrice,
+    Expression<double>? subtotal,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (cartId != null) 'cart_id': cartId,
+      if (productId != null) 'product_id': productId,
+      if (sellerId != null) 'seller_id': sellerId,
+      if (productName != null) 'product_name': productName,
+      if (quantity != null) 'quantity': quantity,
+      if (unitPrice != null) 'unit_price': unitPrice,
+      if (subtotal != null) 'subtotal': subtotal,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CartItemsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? cartId,
+    Value<String>? productId,
+    Value<String>? sellerId,
+    Value<String>? productName,
+    Value<int>? quantity,
+    Value<double>? unitPrice,
+    Value<double>? subtotal,
+    Value<int>? rowid,
+  }) {
+    return CartItemsCompanion(
+      id: id ?? this.id,
+      cartId: cartId ?? this.cartId,
+      productId: productId ?? this.productId,
+      sellerId: sellerId ?? this.sellerId,
+      productName: productName ?? this.productName,
+      quantity: quantity ?? this.quantity,
+      unitPrice: unitPrice ?? this.unitPrice,
+      subtotal: subtotal ?? this.subtotal,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (cartId.present) {
+      map['cart_id'] = Variable<String>(cartId.value);
+    }
+    if (productId.present) {
+      map['product_id'] = Variable<String>(productId.value);
+    }
+    if (sellerId.present) {
+      map['seller_id'] = Variable<String>(sellerId.value);
+    }
+    if (productName.present) {
+      map['product_name'] = Variable<String>(productName.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    if (unitPrice.present) {
+      map['unit_price'] = Variable<double>(unitPrice.value);
+    }
+    if (subtotal.present) {
+      map['subtotal'] = Variable<double>(subtotal.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CartItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('cartId: $cartId, ')
+          ..write('productId: $productId, ')
+          ..write('sellerId: $sellerId, ')
+          ..write('productName: $productName, ')
+          ..write('quantity: $quantity, ')
+          ..write('unitPrice: $unitPrice, ')
+          ..write('subtotal: $subtotal, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $UsersTable users = $UsersTable(this);
   late final $ProductsTable products = $ProductsTable(this);
+  late final $CartTable cart = $CartTable(this);
+  late final $CartItemsTable cartItems = $CartItemsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [users, products];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    users,
+    products,
+    cart,
+    cartItems,
+  ];
 }
 
 typedef $$UsersTableCreateCompanionBuilder =
@@ -1887,6 +2716,434 @@ typedef $$ProductsTableProcessedTableManager =
       Product,
       PrefetchHooks Function()
     >;
+typedef $$CartTableCreateCompanionBuilder =
+    CartCompanion Function({
+      required String id,
+      required String customerId,
+      required String status,
+      required double total,
+      Value<int> rowid,
+    });
+typedef $$CartTableUpdateCompanionBuilder =
+    CartCompanion Function({
+      Value<String> id,
+      Value<String> customerId,
+      Value<String> status,
+      Value<double> total,
+      Value<int> rowid,
+    });
+
+class $$CartTableFilterComposer extends Composer<_$AppDatabase, $CartTable> {
+  $$CartTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CartTableOrderingComposer extends Composer<_$AppDatabase, $CartTable> {
+  $$CartTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get total => $composableBuilder(
+    column: $table.total,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CartTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CartTable> {
+  $$CartTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get customerId => $composableBuilder(
+    column: $table.customerId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<double> get total =>
+      $composableBuilder(column: $table.total, builder: (column) => column);
+}
+
+class $$CartTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CartTable,
+          CartData,
+          $$CartTableFilterComposer,
+          $$CartTableOrderingComposer,
+          $$CartTableAnnotationComposer,
+          $$CartTableCreateCompanionBuilder,
+          $$CartTableUpdateCompanionBuilder,
+          (CartData, BaseReferences<_$AppDatabase, $CartTable, CartData>),
+          CartData,
+          PrefetchHooks Function()
+        > {
+  $$CartTableTableManager(_$AppDatabase db, $CartTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CartTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CartTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CartTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> customerId = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<double> total = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CartCompanion(
+                id: id,
+                customerId: customerId,
+                status: status,
+                total: total,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String customerId,
+                required String status,
+                required double total,
+                Value<int> rowid = const Value.absent(),
+              }) => CartCompanion.insert(
+                id: id,
+                customerId: customerId,
+                status: status,
+                total: total,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CartTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CartTable,
+      CartData,
+      $$CartTableFilterComposer,
+      $$CartTableOrderingComposer,
+      $$CartTableAnnotationComposer,
+      $$CartTableCreateCompanionBuilder,
+      $$CartTableUpdateCompanionBuilder,
+      (CartData, BaseReferences<_$AppDatabase, $CartTable, CartData>),
+      CartData,
+      PrefetchHooks Function()
+    >;
+typedef $$CartItemsTableCreateCompanionBuilder =
+    CartItemsCompanion Function({
+      required String id,
+      required String cartId,
+      required String productId,
+      required String sellerId,
+      required String productName,
+      required int quantity,
+      required double unitPrice,
+      required double subtotal,
+      Value<int> rowid,
+    });
+typedef $$CartItemsTableUpdateCompanionBuilder =
+    CartItemsCompanion Function({
+      Value<String> id,
+      Value<String> cartId,
+      Value<String> productId,
+      Value<String> sellerId,
+      Value<String> productName,
+      Value<int> quantity,
+      Value<double> unitPrice,
+      Value<double> subtotal,
+      Value<int> rowid,
+    });
+
+class $$CartItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $CartItemsTable> {
+  $$CartItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cartId => $composableBuilder(
+    column: $table.cartId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get productId => $composableBuilder(
+    column: $table.productId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sellerId => $composableBuilder(
+    column: $table.sellerId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get productName => $composableBuilder(
+    column: $table.productName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get unitPrice => $composableBuilder(
+    column: $table.unitPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CartItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CartItemsTable> {
+  $$CartItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cartId => $composableBuilder(
+    column: $table.cartId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get productId => $composableBuilder(
+    column: $table.productId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sellerId => $composableBuilder(
+    column: $table.sellerId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get productName => $composableBuilder(
+    column: $table.productName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get unitPrice => $composableBuilder(
+    column: $table.unitPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get subtotal => $composableBuilder(
+    column: $table.subtotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CartItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CartItemsTable> {
+  $$CartItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get cartId =>
+      $composableBuilder(column: $table.cartId, builder: (column) => column);
+
+  GeneratedColumn<String> get productId =>
+      $composableBuilder(column: $table.productId, builder: (column) => column);
+
+  GeneratedColumn<String> get sellerId =>
+      $composableBuilder(column: $table.sellerId, builder: (column) => column);
+
+  GeneratedColumn<String> get productName => $composableBuilder(
+    column: $table.productName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<double> get unitPrice =>
+      $composableBuilder(column: $table.unitPrice, builder: (column) => column);
+
+  GeneratedColumn<double> get subtotal =>
+      $composableBuilder(column: $table.subtotal, builder: (column) => column);
+}
+
+class $$CartItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CartItemsTable,
+          CartItem,
+          $$CartItemsTableFilterComposer,
+          $$CartItemsTableOrderingComposer,
+          $$CartItemsTableAnnotationComposer,
+          $$CartItemsTableCreateCompanionBuilder,
+          $$CartItemsTableUpdateCompanionBuilder,
+          (CartItem, BaseReferences<_$AppDatabase, $CartItemsTable, CartItem>),
+          CartItem,
+          PrefetchHooks Function()
+        > {
+  $$CartItemsTableTableManager(_$AppDatabase db, $CartItemsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CartItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CartItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CartItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> cartId = const Value.absent(),
+                Value<String> productId = const Value.absent(),
+                Value<String> sellerId = const Value.absent(),
+                Value<String> productName = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
+                Value<double> unitPrice = const Value.absent(),
+                Value<double> subtotal = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CartItemsCompanion(
+                id: id,
+                cartId: cartId,
+                productId: productId,
+                sellerId: sellerId,
+                productName: productName,
+                quantity: quantity,
+                unitPrice: unitPrice,
+                subtotal: subtotal,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String cartId,
+                required String productId,
+                required String sellerId,
+                required String productName,
+                required int quantity,
+                required double unitPrice,
+                required double subtotal,
+                Value<int> rowid = const Value.absent(),
+              }) => CartItemsCompanion.insert(
+                id: id,
+                cartId: cartId,
+                productId: productId,
+                sellerId: sellerId,
+                productName: productName,
+                quantity: quantity,
+                unitPrice: unitPrice,
+                subtotal: subtotal,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CartItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CartItemsTable,
+      CartItem,
+      $$CartItemsTableFilterComposer,
+      $$CartItemsTableOrderingComposer,
+      $$CartItemsTableAnnotationComposer,
+      $$CartItemsTableCreateCompanionBuilder,
+      $$CartItemsTableUpdateCompanionBuilder,
+      (CartItem, BaseReferences<_$AppDatabase, $CartItemsTable, CartItem>),
+      CartItem,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1895,4 +3152,7 @@ class $AppDatabaseManager {
       $$UsersTableTableManager(_db, _db.users);
   $$ProductsTableTableManager get products =>
       $$ProductsTableTableManager(_db, _db.products);
+  $$CartTableTableManager get cart => $$CartTableTableManager(_db, _db.cart);
+  $$CartItemsTableTableManager get cartItems =>
+      $$CartItemsTableTableManager(_db, _db.cartItems);
 }

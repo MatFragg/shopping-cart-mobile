@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -12,6 +11,17 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shopping_cart/core/constants/api_constants.dart';
+import 'package:shopping_cart/features/cart/data/datasources/cart_local_data_source.dart';
+import 'package:shopping_cart/features/cart/data/datasources/cart_remote_data_source.dart';
+import 'package:shopping_cart/features/cart/data/repositories/cart_repository_impl.dart';
+import 'package:shopping_cart/features/cart/domain/repositories/cart_repository.dart';
+import 'package:shopping_cart/features/cart/domain/usecases/add_item_to_cart.dart';
+import 'package:shopping_cart/features/cart/domain/usecases/clear_cart.dart';
+import 'package:shopping_cart/features/cart/domain/usecases/get_active_cart.dart';
+import 'package:shopping_cart/features/cart/domain/usecases/remove_cart_item.dart';
+import 'package:shopping_cart/features/cart/domain/usecases/update_cart_item.dart';
+import 'package:shopping_cart/features/cart/presentation/bloc/cart_bloc.dart';
+import 'package:shopping_cart/features/cart/presentation/bloc/cart_event.dart';
 import 'package:shopping_cart/features/products/data/datasources/product_local_data_source.dart';
 import 'package:shopping_cart/features/products/data/datasources/product_remote_data_source.dart';
 import 'package:shopping_cart/features/products/data/repositories/product_repository_impl.dart';
@@ -192,12 +202,44 @@ Future<void> init() async {
         () => ProductLocalDataSourceImpl(database: sl()),
   );
 
+  sl.registerFactory(
+        () => CartBloc(
+      getActiveCart: sl(),
+      addItemToCart: sl(),
+      removeCartItem: sl(),
+      updateCartItem: sl(),
+      clearCart: sl(),
+    ),
+  );
+
+// Use cases
+  sl.registerLazySingleton(() => GetActiveCart(sl()));
+  sl.registerLazySingleton(() => AddItemToCart(sl()));
+  sl.registerLazySingleton(() => RemoveCartItem(sl()));
+  sl.registerLazySingleton(() => UpdateCartItem(sl()));
+  sl.registerLazySingleton(() => ClearCart(sl()));
+
+// Repository
+  sl.registerLazySingleton<CartRepository>(
+        () => CartRepositoryImpl(
+      remoteDataSource: sl(),
+      //localDataSource: sl(),
+      tokenDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+// Data sources
+  sl.registerLazySingleton<CartRemoteDataSource>(
+        () => CartRemoteDataSourceImpl(dio: sl()),
+  );
+
+  sl.registerLazySingleton<CartLocalDataSource>(
+        () => CartLocalDataSourceImpl(database: sl()),
+  );
+
   //! Core
   sl.registerLazySingleton<NetworkInfo>(
         () => NetworkInfoImpl(sl()),
   );
-
-
-
-
 }

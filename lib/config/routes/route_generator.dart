@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_cart/features/authentication/presentation/pages/home_page.dart';
 import 'package:shopping_cart/features/authentication/presentation/pages/splash_page.dart';
+import 'package:shopping_cart/features/cart/presentation/pages/cart_page.dart';
 import 'package:shopping_cart/features/products/presentation/pages/browse_products_page.dart';
 import 'package:shopping_cart/features/products/presentation/pages/create_product_page.dart';
 import 'package:shopping_cart/features/products/presentation/pages/my_products_page.dart';
@@ -45,6 +46,11 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => ProductDetailPage(product: product),
         );
+
+      case AppRoutes.cart:
+        return MaterialPageRoute(builder: (_) => const CartPage());
+
+
 
       default:
         return MaterialPageRoute(
