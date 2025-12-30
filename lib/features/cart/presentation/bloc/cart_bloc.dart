@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopping_cart/features/cart/domain/entities/cart.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecases/add_item_to_cart.dart';
@@ -72,36 +73,116 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     );
   }
 
-  // TODO: Implementar resto de handlers
   Future<void> _onUpdateQuantity(
       UpdateCartItemQuantity event,
       Emitter<CartState> emit,
       ) async {
-    throw UnimplementedError();
+    final currentState = state;
+
+    if (currentState is CartLoaded) {
+      emit(currentState.copyWith(isUpdating: true));
+
+      final result = await updateCartItem(
+        UpdateCartItemParams(
+          productId: event.productId,
+          quantity: event.quantity,
+        ),
+      );
+
+      result.fold(
+            (failure) {
+          emit(currentState.copyWith(isUpdating: false));
+
+          if (failure is InsufficientStockFailure) {
+            emit(CartStockError(
+              message: failure.message,
+              availableStock: failure.availableStock,
+              currentCart: currentState.cart,
+            ));
+            emit(currentState);
+          } else {
+            emit(CartError(_mapFailureToMessage(failure)));
+          }
+        },
+            (cart) {
+          if (cart.isEmpty) {
+            emit(CartEmpty());
+          } else {
+            emit(CartLoaded(cart, isUpdating: false));
+          }
+        },
+      );
+    }
   }
 
   Future<void> _onRemoveItem(
       RemoveFromCart event,
       Emitter<CartState> emit,
       ) async {
-    throw UnimplementedError();
+    final currentState = state;
+    emit(CartLoading());
+
+    final result = await removeCartItem(
+      RemoveCartItemParams(productId: event.productId),
+    );
+
+    result.fold(
+          (failure) {
+        if (currentState is CartLoaded) {
+          emit(currentState);
+        }
+        emit(CartError(_mapFailureToMessage(failure)));
+      },
+          (_) async {
+        final cartResult = await getActiveCart(NoParams());
+        cartResult.fold(
+              (failure) => emit(CartError(_mapFailureToMessage(failure))),
+              (cart) {
+            if (cart.isEmpty) {
+              emit(CartEmpty());
+            } else {
+              emit(CartOperationSuccess(
+                message: 'Item removed from cart',
+                cart: cart,
+              ));
+            }
+          },
+        );
+      },
+    );
   }
 
   Future<void> _onClearCart(
       ClearCartEvent event,
       Emitter<CartState> emit,
       ) async {
-    throw UnimplementedError();
+    final currentState = state;
+    emit(CartLoading());
+
+    final result = await clearCart(NoParams());
+
+    result.fold(
+          (failure) {
+        if (currentState is CartLoaded) {
+          emit(currentState);
+        }
+        emit(CartError(_mapFailureToMessage(failure)));
+      },
+          (_) => emit(CartEmpty()),
+    );
   }
 
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
-      case ServerFailure:
+      case ServerFailure _:
         return 'Server error. Please try again.';
-      case NetworkFailure:
+      case NetworkFailure _:
         return 'No internet connection.';
-      case AuthenticationFailure:
+      case AuthenticationFailure _:
         return (failure as AuthenticationFailure).message;
+      case InsufficientStockFailure _:
+        final stockFailure = failure as InsufficientStockFailure;
+        return 'Insufficient stock. Available: ${stockFailure.availableStock}';
       default:
         return 'An error occurred.';
     }
