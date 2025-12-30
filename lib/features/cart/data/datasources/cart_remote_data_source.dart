@@ -67,31 +67,48 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       String productId,
       int quantity,
       ) async {
-
-    final response = await dio.put(
-      '${ApiConstants.baseUrl}/api/v1/cart/items/$productId',
-        data: {
-          'quantity': quantity,
-        },
+    try {
+      final response = await dio.put(
+        '${ApiConstants.baseUrl}/api/v1/cart/items/$productId',
+        data: {'quantity': quantity},
         options: Options(headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
-        }));
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      final responseData = response.data as Map<String, dynamic>;
-      final data = responseData['data'] as Map<String, dynamic>;
-      return CartModel.fromJson(data);
-    } else if (response.statusCode == 401) {
-      throw UnauthorizedException();
-    } else {
+      if (response.statusCode == 200) {
+        final responseData = response.data as Map<String, dynamic>;
+        final data = responseData['data'] as Map<String, dynamic>;
+        return CartModel.fromJson(data);
+      } else if (response.statusCode == 401) {
+        throw UnauthorizedException();
+      } else {
+        throw ServerException();
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 500) {
+        final errorData = e.response?.data;
+        if (errorData != null && errorData['message'] != null) {
+          final message = errorData['message'] as String;
+          if (message.contains('Insufficient stock')) {
+            final regex = RegExp(r'Available: (\d+)');
+            final match = regex.firstMatch(message);
+            final available = match != null ? int.parse(match.group(1)!) : 0;
+
+            throw InsufficientStockException(
+              message: message,
+              availableStock: available,
+            );
+          }
+        }
+      }
       throw ServerException();
     }
   }
 
   @override
   Future<void> removeItem(String token, String productId) async {
-    // TODO: DELETE /api/v1/cart/items/{productId}
 
     final response = await dio.delete(
       '${ApiConstants.baseUrl}/api/v1/cart/items/$productId',
@@ -111,8 +128,6 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
 
   @override
   Future<void> clearCart(String token) async {
-    // TODO: DELETE /api/v1/cart/clear
-
     final response = await dio.delete(
       '${ApiConstants.baseUrl}/api/v1/cart/clear',
         options: Options(headers: {
